@@ -1,16 +1,29 @@
 from django.db import models
-from django.core.validators import  MinValueValidator, MaxValueValidator
 from django.urls import reverse
 from django.utils.text import slugify
 
 
+class ProductCategory(models.Model):
+    title = models.CharField(max_length=300, db_index=True, verbose_name='title')
+    url_title = models.CharField(max_length=300, db_index=True, verbose_name='title on url ')
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Product Category'
+        verbose_name_plural = 'Product Categories'
+
+
 class Product(models.Model):
     title = models.CharField(max_length=300)
-    price = models.IntegerField()
-    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=0)
-    short_desc = models.CharField(max_length=400, null=True)
-    is_active = models.BooleanField(null=True)
-    slug = models.SlugField(default="", null=False, db_index=True, blank=True, editable=False)
+    category = models.ManyToManyField(ProductCategory, related_name='product_categories', verbose_name='categories')
+    price = models.IntegerField(verbose_name='Price')
+    short_desc = models.CharField(max_length=400, db_index=True, verbose_name='Short Description')
+    main_desc = models.TextField(verbose_name='Main Description', db_index=True)
+    is_active = models.BooleanField(verbose_name='active / deactive')
+    slug = models.SlugField(default="", null=False, blank=True, editable=False, unique=True)
+    is_delete = models.BooleanField(verbose_name='Deleted / Not')
 
     def get_absolute_url(self):
         return reverse(viewname='product_detail', args=[self.slug])
@@ -20,4 +33,23 @@ class Product(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.title}, {self.price}, {self.rating}, {self.short_desc}, {self.is_active}"
+        return f"{self.title}, {self.price}, {self.short_desc}, {self.is_active}"
+
+    class Meta:
+        verbose_name = 'Product'
+        verbose_name_plural = 'Products'
+
+
+class ProductTag(models.Model):
+    caption = models.CharField(max_length=300, db_index=True, verbose_name='tag')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_tags')
+    is_active = models.BooleanField(verbose_name='active / deactive')
+
+    def __str__(self):
+        return self.caption
+
+    class Meta:
+        verbose_name = 'Product Tag'
+        verbose_name_plural = 'Product Tags'
+
+
