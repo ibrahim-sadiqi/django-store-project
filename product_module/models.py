@@ -15,9 +15,23 @@ class ProductCategory(models.Model):
         verbose_name_plural = 'Product Categories'
 
 
+class ProductBrand(models.Model):
+    title = models.CharField(max_length=300, verbose_name='Brand name', db_index=True)
+    is_active = models.BooleanField(verbose_name='Active / Deactive')
+
+    class Meta:
+        verbose_name = 'Brand'
+        verbose_name_plural = 'Brands'
+
+    def __str__(self):
+        return self.title
+
+
 class Product(models.Model):
     title = models.CharField(max_length=300)
     category = models.ManyToManyField(ProductCategory, related_name='product_categories', verbose_name='categories')
+    image = models.ImageField(upload_to='images/products', null=True, blank=True, verbose_name='picture')
+    brand = models.ForeignKey(ProductBrand, verbose_name='Brand', on_delete=models.CASCADE, null=True, blank=True)
     price = models.IntegerField(verbose_name='Price')
     short_desc = models.CharField(max_length=400, db_index=True, verbose_name='Short Description')
     main_desc = models.TextField(verbose_name='Main Description', db_index=True)
@@ -51,5 +65,3 @@ class ProductTag(models.Model):
     class Meta:
         verbose_name = 'Product Tag'
         verbose_name_plural = 'Product Tags'
-
-

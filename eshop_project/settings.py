@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-igu_=*)9-j3chz4pyx2yy6@6$=@e3x3vl&c!q)j^!k!)ugflyq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home_module',
     'product_module',
+    'contact_module',
+    'user_module',
     'django_render_partial'
 ]
 
@@ -76,6 +78,8 @@ WSGI_APPLICATION = 'eshop_project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+
+AUTH_USER_MODEL = 'user_module.User'
 
 DATABASES = {
     'default': {
@@ -120,6 +124,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_ROOT = BASE_DIR / 'uploads'
+MEDIA_URL = '/medias/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
@@ -129,3 +135,15 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.mail.yahoo.com'
+EMAIL_HOST_USER = 'm.ebrahimsadiqi@yahoo.com'
+EMAIL_HOST_PASSWORD = 'xowjzptwfxqxzage'
+EMAIL_PORT = 587
+
+
+
+
