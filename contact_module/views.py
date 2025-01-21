@@ -1,17 +1,21 @@
 from django.shortcuts import render, redirect
-from django.views.generic import FormView, CreateView, ListView
+from django.views.generic import CreateView, ListView
+
+from site_module.models import SiteSetting
 from .forms import ContactUsModelForm
 from .models import UserProfile
 
 
-class ContactUsView(FormView):
+class ContactUsView(CreateView):
     template_name = 'contact_module/contact_us_page.html'
     form_class = ContactUsModelForm
     success_url = '/contact-us/'
 
-    def form_valid(self, form):
-        form.save()
-        return super(ContactUsView, self).form_valid(form)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        setting: SiteSetting = SiteSetting.objects.filter(is_main_setting=True).first()
+        context['site_setting'] = setting
+        return context
 
 
 class CreateProfileView(CreateView):

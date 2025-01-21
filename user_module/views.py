@@ -1,7 +1,9 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
+
+from utils.email_service import send_email
 from .models import User
 from django.http import  Http404, HttpRequest
 from user_module.forms import UserRegistrationForm, UserLoginForm, ForgetPasswordForm, ResetPasswordForm
@@ -33,6 +35,10 @@ class UserRegistrationView(View):
                     username=user_email)
                 new_user.set_password(user_passwd)
                 new_user.save()
+                # send email active account
+                send_email(subject='Account Activation', to=new_user.email,
+                           context={'user': new_user},
+                           template_name='emails/activate_account.html')
                 return redirect(reverse('login_page'))
         context = {
             'register_form': register_form
@@ -101,10 +107,12 @@ class ForgetPasswordView(View):
         forget_passwd_form = ForgetPasswordForm(request.POST)
         if forget_passwd_form.is_valid():
             user_email = forget_passwd_form.cleaned_data.get('email')
-            user : User = User.objects.filter(email__iexact=user_email).first()
+            user: User = User.objects.filter(email__iexact=user_email).first()
             if user is not None:
-                # todo send reset email
-                pass
+                send_email(subject='Reset Password', to=user_email,
+                           context={'user': user},
+                           template_name='emails/forget_password.html')
+                return redirect(reverse('login_page'))
         context = {
             'forget_passwd_form': forget_passwd_form
         }
@@ -143,6 +151,12 @@ class ResetPasswordView(View):
             'user': user
         }
         return render(request, 'user_module/reset_password.html', context)
+
+
+class UserLogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect(reverse('login_page'))
 
 
 
