@@ -80,12 +80,10 @@ class UserLoginView(View):
                 if user.is_active:
                     if user.check_password(user_passwd):
                         login(request, user)
-                        print('Logined')
                         return redirect(reverse('index_page'))
                     else:
                         login_form.add_error('email', 'something is wrong')
                 else:
-                    print('is not activated')
                     login_form.add_error('email', 'Your account has not been activated')
             else:
                 login_form.add_error('email', 'something is wrong')

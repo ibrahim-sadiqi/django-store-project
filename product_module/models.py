@@ -6,6 +6,8 @@ from django.utils.text import slugify
 class ProductCategory(models.Model):
     title = models.CharField(max_length=300, db_index=True, verbose_name='title')
     url_title = models.CharField(max_length=300, db_index=True, verbose_name='title on url ')
+    is_active = models.BooleanField(default=True, verbose_name='Enable/Disable')
+    is_delete = models.BooleanField(default=False, verbose_name='Deleted/ Not deleted')
 
     def __str__(self):
         return self.title
@@ -17,6 +19,7 @@ class ProductCategory(models.Model):
 
 class ProductBrand(models.Model):
     title = models.CharField(max_length=300, verbose_name='Brand name', db_index=True)
+    url_title = models.CharField(max_length=200, verbose_name='Url Name', db_index=True)
     is_active = models.BooleanField(verbose_name='Active / Deactive')
 
     class Meta:

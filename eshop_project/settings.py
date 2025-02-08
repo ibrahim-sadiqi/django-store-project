@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'contact_module',
     'article_module',
     'user_module',
+    'user_panel',
     'site_module',
     'polls',
     # External module

@@ -1,0 +1,27 @@
+{% extends 'shared/_layout.html' %}
+{% load render_partial %}
+{% block title %}
+    User Panel
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                {% if current_user.avator %}
+                    <a href="#" class="thumbnail">
+                        <img style="width: 100%" src="{{ current_user.avator.url }}" alt="">
+                    </a>
+
+                {% endif %}
+                {% render_partial 'user_panel.views.user_panel_components' %}
+            </div>
+            <div class="col-md-8">
+                <form enctype="multipart/form-data" action="{% url 'edit_user_profile' %}" method="post"> {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success ">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

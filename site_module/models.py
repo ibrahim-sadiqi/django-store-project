@@ -59,3 +59,23 @@ class Slider(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class SiteBanner(models.Model):
+    class SiteBannerPosition(models.TextChoices):
+        home_page = 'home_page', 'Main Page'
+        product_list = 'product_list', 'Product List Page'
+        product_detail = 'product_detail', 'Product Detail Page'
+
+    title = models.CharField(max_length=200, verbose_name='Title')
+    url = models.URLField(max_length=400, null=True, blank=True, verbose_name='Banner URL')
+    image = models.ImageField(upload_to='images/banners/', verbose_name='Picture')
+    is_active = models.BooleanField(verbose_name='Enable/Disable')
+    position = models.CharField(max_length=300, choices=SiteBannerPosition, verbose_name='Ad Banners')
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Ad Banner'
+        verbose_name_plural = 'Ad Banners'

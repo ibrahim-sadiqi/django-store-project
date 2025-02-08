@@ -35,12 +35,14 @@ class ArticleDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ArticleDetailView, self).get_context_data(**kwargs)
         article = self.object
-        context['comments'] = ArticleComment.objects.filter(article_id=article.id, parent=None).order_by('-create_date').prefetch_related('articlecomment_set__user')
+        context['comments'] = ArticleComment.objects.filter(article_id=article.id, parent=None).order_by(
+            '-create_date').prefetch_related('articlecomment_set__user')
+        context['comments_count'] = ArticleComment.objects.filter(article_id=article.id).count()
         return context
 
 
 def article_categories_component(request: HttpRequest):
-    article_main_categories = ArticleCategory.objects.filter(is_active=True, parent_id=None)
+    article_main_categories = ArticleCategory.objects.filter(is_active=True, parent_id=None).prefetch_related('articlecategory_set')
     context = {
         'main_categories': article_main_categories
     }
@@ -52,7 +54,13 @@ def add_article_comment(request: HttpRequest):
         comment = request.GET.get('article_comment')
         article_id = request.GET.get('article_id')
         parent_id = request.GET.get('parent_id')
-        print(parent_id)
+
         new_comment = ArticleComment(article_id=article_id, text=comment, parent_id=parent_id, user_id=request.user.id)
         new_comment.save()
+        context = {
+            'comments': ArticleComment.objects.filter(article_id=article_id, parent=None).order_by(
+            '-create_date').prefetch_related('articlecomment_set__user'),
+            'comments_count': ArticleComment.objects.filter(article_id=article_id).count()
+        }
+        return render(request, 'article_module/includes/article_comment_partial.html', context)
     return HttpResponse('response')
