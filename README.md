@@ -1,2 +1,2 @@
-# eshop_project
+# Django Online Store Project 
  
